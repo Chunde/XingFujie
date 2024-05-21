@@ -21,11 +21,11 @@ def allowed_file(filename):
 def index():
     return '''
     <!doctype html>
-    <title>Upload Excel File</title>
-    <h1>Upload Excel File for Processing</h1>
+    <title>幸福街表格转换</title>
+    <h1>请上传要处理的文件</h1>
     <form id="uploadForm" method=post enctype=multipart/form-data action="/upload">
       <input type=file name=file id="fileInput" style="display:none;" onchange="document.getElementById('uploadForm').submit();">
-      <button type="button" onclick="document.getElementById('fileInput').click();">Upload File</button>
+      <button type="button" onclick="document.getElementById('fileInput').click();">打开上传</button>
     </form>
     '''
 
