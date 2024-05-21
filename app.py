@@ -17,54 +17,6 @@ os.makedirs(app.config['PROCESSED_FOLDER'], exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# def clean_property(prop):
-#     cleaned_prop = re.sub(r'\(.*?\)', '', prop)
-#     return cleaned_prop.strip()
-
-# def split_property(prop):
-#     category_pattern = r'^[A-Za-z0-9]+(?=[\u4e00-\u9fff])'
-#     color_pattern = r'[\u4e00-\u9fff].*?(?=;)'
-#     size_pattern = r'(?<=:)\d+'
-
-#     category_match = re.search(category_pattern, prop)
-#     category = category_match.group() if category_match else None
-
-#     if category:
-#         color_match = re.search(color_pattern, prop[len(category):])
-#         color = color_match.group().strip() if color_match else None
-#     else:
-#         color = None
-
-#     if color:
-#         size_match = re.search(size_pattern, prop[prop.find(color) + len(color):])
-#         size = size_match.group() if size_match else None
-#     else:
-#         size = None
-
-#     return [category, size, color]
-
-# def process_excel_file(input_path):
-#     file_extension = input_path.split('.')[-1]
-
-#     if file_extension == 'xls':
-#         df = pd.read_excel(input_path, sheet_name=0, engine='xlrd')
-#     elif file_extension == 'xlsx':
-#         df = pd.read_excel(input_path, sheet_name=0, engine='openpyxl')
-#     else:
-#         raise ValueError("Unsupported file format. Please provide an Excel file with .xls or .xlsx extension.")
-
-#     df['cleaned_property'] = df['property'].apply(clean_property)
-#     df[['category', 'size', 'color']] = df['cleaned_property'].apply(lambda x: pd.Series(split_property(x)))
-#     df.drop(columns=['cleaned_property'], inplace=True)
-#     df = df.dropna(subset=['color'])
-
-#     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-#     output_filename = f"processed_{timestamp}.xlsx"
-#     output_path = os.path.join(app.config['PROCESSED_FOLDER'], output_filename)
-#     df.to_excel(output_path, index=False, engine='openpyxl')
-
-#     return output_path
-
 @app.route('/')
 def index():
     return '''
