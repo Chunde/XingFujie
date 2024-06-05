@@ -1,6 +1,5 @@
-#!/usr/bin/python3
+# app.py
 import os
-import re
 import sqlite3
 from flask import Flask, request, send_file, redirect, url_for
 import pandas as pd
@@ -13,6 +12,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['PROCESSED_FOLDER'] = 'processed'
 app.config['ALLOWED_EXTENSIONS'] = {'xls', 'xlsx'}
 app.config['DATABASE'] = 'database.db'
+app.secret_key = 'supersecretkey'  # Add a secret key for session management
 
 # Ensure upload and processed directories exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -88,5 +88,7 @@ def upload_file():
 
 if __name__ == '__main__':
     from search import search_bp  # Import the search blueprint
+
     app.register_blueprint(search_bp)  # Register the search blueprint
+    
     app.run(host='0.0.0.0', port=8080)

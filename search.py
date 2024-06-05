@@ -1,13 +1,20 @@
 # search.py
 import sqlite3
-from flask import Blueprint, request, render_template_string
-from app import app  # Assuming 'app' is defined in app.py
+from flask import Blueprint, request, session, render_template_string
+from app import app
 
 search_bp = Blueprint('search', __name__)
+app.secret_key = 'supersecretkey'  # Add this line to app.py if not already present
 
 @search_bp.route('/search')
 def search_page():
-    return '''
+    # Retrieve accumulated results from the session
+    accumulated_results = session.get('accumulated_results', [])
+
+    # Generate the HTML table rows for accumulated results
+    rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
+
+    return f'''
     <!doctype html>
     <title>数据库搜索</title>
     <h1>搜索数据库</h1>
@@ -27,6 +34,7 @@ def search_page():
         </tr>
       </thead>
       <tbody id="resultsBody">
+        {rows}
       </tbody>
     </table>
     '''
@@ -49,8 +57,13 @@ def search_results():
     results = c.fetchall()
     conn.close()
 
-    # Generate the HTML table rows
-    rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in results)
+    # Retrieve accumulated results from the session and update with new results
+    accumulated_results = session.get('accumulated_results', [])
+    accumulated_results.extend(results)
+    session['accumulated_results'] = accumulated_results
+
+    # Generate the HTML table rows for new search results
+    rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
 
     return render_template_string(f'''
     <!doctype html>
@@ -67,4 +80,3 @@ def search_results():
       </tbody>
     </table>
     ''')
-
