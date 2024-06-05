@@ -1,10 +1,11 @@
+#!/usr/bin/python3
 import os
 import re
 from flask import Flask, request, send_file, redirect, url_for
 import pandas as pd
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from convert_douyin import *
+from convert_tmall import *
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['PROCESSED_FOLDER'] = 'processed'
@@ -40,10 +41,11 @@ def upload_file():
         filename = secure_filename(file.filename)
         input_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(input_path)
-        processed_path = process_excel_file(input_path)
+        processed_path = tmall_process_excel_file(input_path)
         return send_file(processed_path, as_attachment=True)
     else:
         return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080)
