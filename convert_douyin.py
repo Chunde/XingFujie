@@ -73,7 +73,7 @@ def douyin_process_excel_file(input_file):
     df_selected = df[selected_columns]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file_path = f"{input_file.rsplit('.', 1)[0]}_{timestamp}.xlsx"
-    aoutput_file_path = add_prefix_to_specific_file(output_file_path, 'tm_')    
+    output_file_path = add_prefix_to_specific_file(output_file_path, 'tm_')    
     df_selected.to_excel(output_file_path, index=False, engine='openpyxl')  # Use openpyxl engine for output
 
     print(f"Processed file saved as {output_file_path}")
