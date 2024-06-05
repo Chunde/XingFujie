@@ -110,7 +110,7 @@ def search_results():
     <body>
         <h1>搜索结果</h1>
         <form id="searchForm" action="/search_results" method="post">
-            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
+            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="">
             <button type="submit">搜索</button>
             <button type="button" id="clearResults">清除结果</button>
         </form>
