@@ -3,7 +3,6 @@ from flask import Blueprint, request, session, render_template_string
 from app import app
 
 search_bp = Blueprint('search', __name__)
-app.secret_key = 'supersecretkey'  # Add this line to app.py if not already present
 
 @search_bp.route('/search')
 def search_page():
@@ -12,26 +11,45 @@ def search_page():
     columns = session.get('columns', [])
 
     # Generate the HTML table rows for accumulated results
-    rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
+    rows = ''.join(f'<tr>{"".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
 
-    return f'''
+    return render_template_string('''
     <!doctype html>
-    <title>数据库搜索</title>
-    <h1>搜索数据库</h1>
-    <form action="/search_results" method="post">
-      <input type="text" name="search_query" placeholder="输入搜索内容">
-      <button type="submit">搜索</button>
-    </form>
-    <br>
-    <table id="resultsTable">
-      <thead>
-        <tr>{" ".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
-      </thead>
-      <tbody id="resultsBody">
-        {rows}
-      </tbody>
-    </table>
-    '''
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>数据库搜索</title>
+        <!-- Include DataTables CSS -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+        <!-- Include jQuery -->
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!-- Include DataTables JS -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </head>
+    <body>
+        <h1>搜索数据库</h1>
+        <form action="/search_results" method="post">
+            <input type="text" name="search_query" placeholder="输入搜索内容">
+            <button type="submit">搜索</button>
+        </form>
+        <br>
+        <table id="resultsTable" class="display">
+            <thead>
+                <tr>{"".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
+            </thead>
+            <tbody id="resultsBody">
+                {{ rows | safe }}
+            </tbody>
+        </table>
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('#resultsTable').DataTable();
+            });
+        </script>
+    </body>
+    </html>
+    ''', rows=rows)
 
 @search_bp.route('/search_results', methods=['POST'])
 def search_results():
@@ -60,18 +78,37 @@ def search_results():
     # Generate the HTML table rows for new search results
     rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
 
-    return render_template_string(f'''
+    return render_template_string('''
     <!doctype html>
-    <title>搜索结果</title>
-    <h1>搜索结果</h1>
-    <a href="/search">返回搜索</a>
-    <br><br>
-    <table id="resultsTable">
-      <thead>
-        <tr>{" ".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
-      </thead>
-      <tbody id="resultsBody">
-        {rows}
-      </tbody>
-    </table>
-    ''')
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>搜索结果</title>
+        <!-- Include DataTables CSS -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+        <!-- Include jQuery -->
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!-- Include DataTables JS -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </head>
+    <body>
+        <h1>搜索结果</h1>
+        <a href="/search">返回搜索</a>
+        <br><br>
+        <table id="resultsTable" class="display">
+            <thead>
+                <tr>{"".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
+            </thead>
+            <tbody id="resultsBody">
+                {{ rows | safe }}
+            </tbody>
+        </table>
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('#resultsTable').DataTable();
+            });
+        </script>
+    </body>
+    </html>
+    ''', rows=rows)
