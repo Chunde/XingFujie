@@ -13,6 +13,9 @@ def search_page():
     # Generate the HTML table rows for accumulated results
     rows = ''.join(f'<tr>{"".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
 
+    # Generate the table header with column names
+    table_header = ''.join([f"<th>{col}</th>" for col in ["ID"] + columns])
+
     return render_template_string('''
     <!doctype html>
     <html lang="en">
@@ -29,14 +32,15 @@ def search_page():
     </head>
     <body>
         <h1>搜索数据库</h1>
-        <form action="/search_results" method="post">
-            <input type="text" name="search_query" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
+        <form id="searchForm" action="/search_results" method="post">
+            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
             <button type="submit">搜索</button>
+            <button type="button" id="clearResults">清除结果</button>
         </form>
         <br>
         <table id="resultsTable" class="display">
             <thead>
-                <tr>{"".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
+                <tr>{{ table_header | safe }}</tr>
             </thead>
             <tbody id="resultsBody">
                 {{ rows | safe }}
@@ -45,11 +49,16 @@ def search_page():
         <script>
             $(document).ready(function() {
                 $('#resultsTable').DataTable();
+                $('#searchQuery').focus();
+                $('#clearResults').click(function() {
+                    $('#resultsBody').empty();
+                    $('#searchQuery').val('').focus();
+                });
             });
         </script>
     </body>
     </html>
-    ''', rows=rows)
+    ''', rows=rows, table_header=table_header)
 
 @search_bp.route('/search_results', methods=['POST'])
 def search_results():
@@ -94,14 +103,15 @@ def search_results():
     </head>
     <body>
         <h1>搜索结果</h1>
-        <form action="/search_results" method="post">
-            <input type="text" name="search_query" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
+        <form id="searchForm" action="/search_results" method="post">
+            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
             <button type="submit">搜索</button>
+            <button type="button" id="clearResults">清除结果</button>
         </form>
         <br>
         <table id="resultsTable" class="display">
             <thead>
-                <tr>{"".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
+                <tr>{{ table_header | safe }}</tr>
             </thead>
             <tbody id="resultsBody">
                 {{ rows | safe }}
@@ -110,8 +120,13 @@ def search_results():
         <script>
             $(document).ready(function() {
                 $('#resultsTable').DataTable();
+                $('#searchQuery').focus();
+                $('#clearResults').click(function() {
+                    $('#resultsBody').empty();
+                    $('#searchQuery').val('').focus();
+                });
             });
         </script>
     </body>
     </html>
-    ''', rows=rows)
+    ''', rows=rows, table_header=table_header)
