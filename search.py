@@ -90,9 +90,6 @@ def search_results():
     # Generate the table header with column names
     table_header = ''.join([f"<th>{col}</th>" for col in columns])
 
-    # Clear accumulated_results after displaying the results
-    session['accumulated_results'] = []
-
     return render_template_string('''
     <!doctype html>
     <html lang="en">
@@ -110,7 +107,7 @@ def search_results():
     <body>
         <h1>搜索结果</h1>
         <form id="searchForm" action="/search_results" method="post">
-            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="">
+            <input type="text" name="search_query" id="searchQuery" placeholder="输入搜索内容" value="{{ request.form['search_query'] if request.form.get('search_query') else '' }}">
             <button type="submit">搜索</button>
             <button type="button" id="clearResults">清除结果</button>
         </form>
@@ -136,3 +133,4 @@ def search_results():
     </body>
     </html>
     ''', rows=rows, table_header=table_header)
+
