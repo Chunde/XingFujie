@@ -1,4 +1,3 @@
-# search.py
 import sqlite3
 from flask import Blueprint, request, session, render_template_string
 from app import app
@@ -10,6 +9,7 @@ app.secret_key = 'supersecretkey'  # Add this line to app.py if not already pres
 def search_page():
     # Retrieve accumulated results from the session
     accumulated_results = session.get('accumulated_results', [])
+    columns = session.get('columns', [])
 
     # Generate the HTML table rows for accumulated results
     rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
@@ -25,13 +25,7 @@ def search_page():
     <br>
     <table id="resultsTable">
       <thead>
-        <tr>
-          <th>ID</th>
-          <th>列1</th>
-          <th>列2</th>
-          <th>列3</th>
-          <!-- Add more column headers as needed -->
-        </tr>
+        <tr>{" ".join([f"<th>{col}</th>" for col in ["ID"] + columns])}</tr>
       </thead>
       <tbody id="resultsBody">
         {rows}
@@ -61,6 +55,7 @@ def search_results():
     accumulated_results = session.get('accumulated_results', [])
     accumulated_results.extend(results)
     session['accumulated_results'] = accumulated_results
+    session['columns'] = columns
 
     # Generate the HTML table rows for new search results
     rows = ''.join(f'<tr>{" ".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
