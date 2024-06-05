@@ -87,6 +87,9 @@ def search_results():
     # Generate the HTML table rows for new search results
     rows = ''.join(f'<tr>{"".join([f"<td>{field}</td>" for field in row])}</tr>' for row in accumulated_results)
 
+    # Generate the table header with column names
+    table_header = ''.join([f"<th>{col}</th>" for col in columns])
+
     return render_template_string('''
     <!doctype html>
     <html lang="en">
@@ -121,6 +124,7 @@ def search_results():
             $(document).ready(function() {
                 $('#resultsTable').DataTable();
                 $('#searchQuery').focus();
+                
                 $('#clearResults').click(function() {
                     $('#resultsBody').empty();
                     $('#searchQuery').val('').focus();
@@ -130,3 +134,4 @@ def search_results():
     </body>
     </html>
     ''', rows=rows, table_header=table_header)
+         
