@@ -81,6 +81,7 @@ def tmall_process_excel_file(input_file):
     selected_columns = ["打印时间","店铺名称", "快递公司", "快递单号", "商家编码","属性","子订单商品数量", category, shoe_color, shoe_size, "主订单编号"]
     df['属性'] = df[category]  + df[shoe_color] + '，' + df[shoe_size]
     df_selected = df[selected_columns]
+    df_selected.columns = ["付款时间","店铺", "物流公司", "运单号","商家编码","属性", "商品数量", category, shoe_color, shoe_size , "订单编号"] # 保持和天猫同名
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file_path = f"{input_file.rsplit('.', 1)[0]}_{timestamp}.xlsx"    
     output_file_path = add_prefix_to_specific_file(output_file_path, 'tm_')
