@@ -1,6 +1,6 @@
 from flask import Blueprint, request, session, render_template_string
 from flask import render_template
-
+import sqlite3
 from app import app
 
 search_bp = Blueprint('search', __name__)
