@@ -48,9 +48,9 @@ def douyin_process_excel_file(input_file):
 
     # Read the Excel file with the appropriate engine
     if file_extension == 'xls':
-        df = pd.read_excel(input_file, sheet_name=0, engine='xlrd')
+        df = pd.read_excel(input_file, sheet_name=0, dtype={"运单号":str, '订单编号': str}, engine='xlrd')
     elif file_extension == 'xlsx':
-        df = pd.read_excel(input_file, sheet_name=0, engine='openpyxl')
+        df = pd.read_excel(input_file, sheet_name=0, dtype={'订单编号': str}, engine='openpyxl')
     else:
         raise ValueError("Unsupported file format. Please provide an Excel file with .xls or .xlsx extension.")
 
@@ -71,6 +71,7 @@ def douyin_process_excel_file(input_file):
     # Create a timestamped output file name
     selected_columns = ["付款时间","店铺", "物流公司", "运单号","商家编码","属性", "商品数量", category, shoe_color, shoe_size , "订单编号"]
     df_selected = df[selected_columns]
+    # df_selected['订单编号'] = '\'' + df_selected['订单编号'].astype(str)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_file_path = f"{input_file.rsplit('.', 1)[0]}_{timestamp}.xlsx"
     output_file_path = add_prefix_to_specific_file(output_file_path, 'dy_')    
