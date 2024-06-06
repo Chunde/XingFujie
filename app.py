@@ -1,8 +1,9 @@
-# app.py
+from flask import Flask, request, send_file, redirect, url_for, render_template, session, Blueprint
 import os
 import sqlite3
 from flask import Flask, request, send_file, redirect, url_for
 import pandas as pd
+import sqlite3
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from convert_tmall import tmall_process_excel_file  # Ensure this function is defined in convert_tmall module
@@ -85,6 +86,10 @@ def upload_file():
         return send_file(processed_path, as_attachment=True)
     else:
         return redirect(url_for('index'))
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return render_template("error.html", error_message=str(e)), 500
 
 if __name__ == '__main__':
     from search import search_bp  # Import the search blueprint

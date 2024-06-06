@@ -1,4 +1,3 @@
-import sqlite3
 from flask import Blueprint, request, session, render_template_string
 from flask import render_template
 
@@ -105,3 +104,5 @@ def search_results():
     table_header = ''.join([f"<th>{col}</th>" for col in columns])
 
     return render_template('search_results.html', rows=rows, table_header=table_header, search_query=search_query)
+
+# Create the `search_results.html` template inside the `templates` directory with the following content:
